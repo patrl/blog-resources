@@ -9,8 +9,7 @@ let
 
   jupyter = import jupyterLib {pkgs=pkgs;};
 
-  ihaskellWithPackages = jupyter.kernels.iHaskellWith {
-      #extraIHaskellFlags = "--debug";
+  iHaskell = jupyter.kernels.iHaskellWith {
       haskellPackages = pkgs.haskell.packages.ghc865;
       name = "monad-bayes";
       packages = p: with p; [
@@ -26,14 +25,9 @@ let
       ];
     };
 
-  jupyterlabWithKernels =
+  jupyterEnvironment =
     jupyter.jupyterlabWith {
-      kernels = [ ihaskellWithPackages ];
-      directory = jupyter.mkDirectoryWith {
-        extensions = [
-          "jupyterlab-ihaskell"
-        ];
-      };
+      kernels = [ iHaskell ];
     };
 in
-  jupyterlabWithKernels.env
+  jupyterEnvironment.env
